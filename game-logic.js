@@ -342,6 +342,9 @@ let hasStartedInteraction = false;
 const handleStartInteraction = (e) => {
     if (hasStartedInteraction) return;
     
+    // Aplicar blur imediato para evitar transferência de foco
+    if (e && e.currentTarget) e.currentTarget.blur();
+    
     initAudio(); // Lazy init directly in user handler
     initBackgroundMusic(); // Iniciar música ambiente na primeira interação
     hasStartedInteraction = true;
@@ -397,6 +400,9 @@ function initMission(level) {
 function showQuestion() {
     const q = gameState.missionQuestions[gameState.currentQuestionIndex];
     questionText.innerText = q.q;
+    
+    // Limpeza profunda antes de renderizar novas alternativas
+    if (document.activeElement) document.activeElement.blur();
     optionsGrid.innerHTML = '';
     hintCard.classList.add('hidden-hint');
     
@@ -404,14 +410,17 @@ function showQuestion() {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
         btn.innerText = opt;
+        btn.disabled = false; // Garantir que comece habilitado e sem classes extras
         btn.onclick = (e) => handleAnswer(idx, e);
         optionsGrid.appendChild(btn);
     });
     
-    // Limpeza total para evitar seleção persistente no mobile
-    optionsGrid.style.pointerEvents = 'auto';
-    if (document.activeElement) document.activeElement.blur();
-    window.getSelection().removeAllRanges();
+    // Garantir que o foco não seja capturado automaticamente pelo primeiro botão (comum no iOS)
+    requestAnimationFrame(() => {
+        optionsGrid.style.pointerEvents = 'auto';
+        if (document.activeElement) document.activeElement.blur();
+        window.getSelection().removeAllRanges();
+    });
     
     updateProgress();
 }

@@ -490,10 +490,21 @@ body {
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-align: left;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
-.option-btn:focus {
-    outline: none;
+.option-btn:focus,
+.option-btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Feedback visual apenas para teclado */
+.option-btn:focus-visible {
+    outline: 2px solid var(--neon-blue) !important;
+    outline-offset: 3px;
 }
 
 /* Hover apenas para dispositivos que suportam hover (previne bug no iPhone) */
