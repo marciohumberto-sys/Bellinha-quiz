@@ -170,6 +170,10 @@ const statBestStreak = document.getElementById('stat-best-streak');
 const soundToggle = document.getElementById('sound-toggle');
 syncSoundUI();
 
+// Pré-carregamento do som de vitória
+const victorySound = new Audio('sounds/victory.mp3');
+victorySound.volume = 0.4;
+
 // Sound Manager (Web Audio API)
 let audioCtx = null;
 let audioReady = false;
@@ -516,6 +520,14 @@ function createSuccessEffect(target) {
 }
 
 function finishMission() {
+    // Tocar som de vitória ao concluir a missão
+    try {
+        victorySound.currentTime = 0;
+        victorySound.play();
+    } catch (e) {
+        console.log('Erro ao tocar som de vitória', e);
+    }
+
     if (gameState.currentMission < 3) {
         showModal(
             "Missão Concluída!",
@@ -547,7 +559,15 @@ function showFinalRanking() {
         msg = "Parabéns por começar sua jornada! Continue estudando as estrelas!";
     }
     
-    playSound('victory'); // Som de conquista ao concluir missão
+    // Tocar som de vitória no ranking final também
+    try {
+        victorySound.currentTime = 0;
+        victorySound.play();
+    } catch (e) {
+        console.log('Erro ao tocar som de vitória', e);
+    }
+    
+    playSound('victory'); // Mantém o som sintetizado como camada extra ou fallback
     
     showModal(
         "Fim da Jornada!",
@@ -751,3 +771,13 @@ function updateBackground(level) {
         }
     }
 }
+
+// Ocultar Loading Screen após carregamento completo
+window.addEventListener('load', () => {
+    const loader = document.getElementById('loading-screen');
+    if (loader) {
+        loader.classList.add('loaded');
+        // Remover do DOM após a transição para economizar recursos
+        setTimeout(() => loader.remove(), 1000);
+    }
+});

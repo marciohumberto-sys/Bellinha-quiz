@@ -3,14 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missão Espacial Bellinha - O Jogo</title>
-    <meta name="description" content="Um jogo educativo de astronomia para a Bellinha explorar o universo!">
+    <title>Missão Espacial da Bellinha | Astro Quiz</title>
+    <meta name="description" content="Um quiz espacial divertido para crianças explorarem o Sistema Solar, estrelas e universo em uma missão interativa.">
+    <meta name="theme-color" content="#0a0f1d">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bellinha-quiz.vercel.app">
+    <meta property="og:title" content="Missão Espacial da Bellinha | Astro Quiz">
+    <meta property="og:description" content="Um quiz espacial divertido para crianças explorarem o Sistema Solar, estrelas e universo em uma missão interativa.">
+    <meta property="og:image" content="https://bellinha-quiz.vercel.app/preview.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://bellinha-quiz.vercel.app">
+    <meta name="twitter:title" content="Missão Espacial da Bellinha | Astro Quiz">
+    <meta name="twitter:description" content="Um quiz espacial divertido para crianças explorarem o Sistema Solar, estrelas e universo em uma missão interativa.">
+    <meta name="twitter:image" content="https://bellinha-quiz.vercel.app/preview.png">
+
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="game-styles.css">
 </head>
 <body>
+    <!-- Loading Premium -->
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="planet-loader"></div>
+            <p>Preparando missão espacial...</p>
+        </div>
+    </div>
+
     <div class="space-background">
         <div id="stars-layer"></div>
         <div id="background-elements"></div>
@@ -123,6 +148,6 @@
         </div>
     </div>
 
-    <script src="game-logic.js"></script>
+    <script src="game-logic.js" defer></script>
 </body>
 </html>
