@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Áudio - Missão Espacial</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #111; color: white; line-height: 1.5; }
+        .card { background: #222; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #444; }
+        button { 
+            display: block; width: 100%; padding: 15px; margin: 10px 0; 
+            background: #3b82f6; color: white; border: none; border-radius: 8px; 
+            font-size: 16px; font-weight: bold; cursor: pointer;
+        }
+        button:active { background: #2563eb; transform: scale(0.98); }
+        #logs { 
+            background: black; padding: 10px; border-radius: 5px; 
+            height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; 
+            border: 1px solid #333;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .info { color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <h1>🛸 Diagnóstico de Áudio</h1>
+    
+    <div class="card">
+        <strong>Sistema:</strong>
+        <div id="sys-info">Carregando...</div>
+    </div>
+
+    <div class="card">
+        <strong>Testes de Áudio:</strong>
+        <button onclick="testWebAudio()">1. Testar Web Audio API (Sintetizado)</button>
+        <button onclick="testHTMLAudio()">2. Testar HTML5 Audio (new Audio())</button>
+        <button onclick="testFile('./sounds/start.mp3', 'Start.mp3')">3. Testar arquivo: start.mp3</button>
+        <button onclick="testFile('./sounds/correct.mp3', 'Correct.mp3')">4. Testar arquivo: correct.mp3</button>
+    </div>
+
+    <div class="card">
+        <strong>Log de Atividades:</strong>
+        <div id="logs"></div>
+    </div>
+
+    <script>
+        const logEl = document.getElementById('logs');
+        const sysInfoEl = document.getElementById('sys-info');
+        let audioCtx = null;
+
+        function log(msg, type = '') {
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `[${time}] ${msg}`;
+            logEl.prepend(div);
+            console.log(msg);
+        }
+
+        function updateSysInfo() {
+            const hasWebAudio = !!(window.AudioContext || window.webkitAudioContext);
+            let state = 'N/A';
+            if (audioCtx) state = audioCtx.state;
+            
+            sysInfoEl.innerHTML = `
+                UA: ${navigator.userAgent}<br>
+                Web Audio API: ${hasWebAudio ? '✅ Sim' : '❌ Não'}<br>
+                Estado Contexto: <span class="info">${state}</span>
+            `;
+        }
+
+        // Teste 1: Web Audio API (Sintetizado - Não depende de arquivos)
+        function testWebAudio() {
+            log('Iniciando Teste Web Audio API...');
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                
+                log('Estado atual: ' + audioCtx.state);
+                
+                if (audioCtx.state === 'suspended') {
+                    log('Tentando resume()...');
+                    audioCtx.resume().then(() => log('Resume concluído', 'success'));
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+                
+                log('Som sintetizado enviado para destino', 'success');
+                updateSysInfo();
+            } catch (err) {
+                log('ERRO Web Audio: ' + err.message, 'error');
+            }
+        }
+
+        // Teste 2: HTML5 Audio (new Audio())
+        function testHTMLAudio() {
+            log('Iniciando Teste HTML5 Audio...');
+            // Usando um som de sistema do navegador se possível, ou apenas criando o objeto
+            const a = new Audio();
+            log('Objeto Audio criado');
+            // Tentando tocar nada apenas para ver se o play() gera erro de permissão
+            a.play().then(() => {
+                log('Play disparado (sem source)', 'info');
+            }).catch(err => {
+                log('Erro esperado/permissão: ' + err.name, 'error');
+            });
+        }
+
+        // Teste 3 e 4: Arquivos Locais
+        function testFile(path, name) {
+            log(`Tentando carregar arquivo: ${name} em ${path}`);
+            const a = new Audio(path);
+            
+            log('Chamando .play()...');
+            a.play().then(() => {
+                log(`SUCESSO: Arquivo ${name} está tocando!`, 'success');
+            }).catch(err => {
+                log(`FALHA no arquivo ${name}: ${err.name} - ${err.message}`, 'error');
+                if (err.name === 'NotSupportedError') log('Dica: Formato de arquivo não suportado pelo iOS', 'info');
+                if (err.name === 'NotAllowedError') log('Dica: O navegador bloqueou o áudio (falta interação)', 'info');
+            });
+        }
+
+        updateSysInfo();
+        log('Página carregada e pronta.', 'info');
+    </script>
+</body>
+</html>

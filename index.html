@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Espacial Bellinha - O Jogo</title>
+    <meta name="description" content="Um jogo educativo de astronomia para a Bellinha explorar o universo!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="game-styles.css">
+</head>
+<body>
+    <div class="space-background">
+        <div id="stars-layer"></div>
+        <div id="background-elements"></div>
+        <div id="spaceship-container"></div>
+    </div>
+
+    <div id="game-container">
+        <!-- Header: Progresso e Pontos -->
+        <header class="game-header">
+            <div class="mission-info">
+                <span id="mission-title">Missão 1: Sistema Solar</span>
+                <div class="progress-bar-container">
+                    <div id="progress-fill" style="width: 0%"></div>
+                </div>
+                <span id="progress-text">Pergunta 1 de 5</span>
+            </div>
+            <div class="header-right">
+                <button id="sound-toggle" class="sound-toggle" title="Alternar Som">
+                    <span class="icon">🔊</span>
+                </button>
+                <div class="score-container">
+                    <span class="label">Pontos</span>
+                    <span id="score-value">000</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Área Central: Assistente e Quiz -->
+        <main class="game-main">
+            <!-- Robô Assistente -->
+            <div class="assistant-area">
+                <div class="robot-container">
+                    <div class="robot" id="space-robot">
+                        <div class="robot-head">
+                            <div class="antenna"></div>
+                            <div class="visor">
+                                <div class="eyes">
+                                    <div class="eye left"></div>
+                                    <div class="eye right"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="robot-body">
+                            <div class="core-light"></div>
+                        </div>
+                        <div class="robot-arms">
+                            <div class="arm left"></div>
+                            <div class="arm right"></div>
+                        </div>
+                        <div class="jet-base"></div>
+                    </div>
+                </div>
+                <div class="speech-bubble" id="speech-bubble">
+                    <p id="assistant-msg">Olá, Bellinha! Sou seu Guia Estelar. Pronta para começar?</p>
+                </div>
+            </div>
+
+            <!-- Quiz Card -->
+            <section class="quiz-card" id="quiz-card">
+                <div class="question-header">
+                    <div class="hint-wrapper">
+                        <button id="hint-btn" class="hint-btn hidden" title="Dica (-10 pontos)">
+                            <span class="icon">💡</span>
+                            <span id="hint-count">2</span>
+                        </button>
+                        <div id="hint-card" class="hint-card hidden-hint">
+                            <p id="hint-text"></p>
+                        </div>
+                    </div>
+                    <div class="question-container">
+                        <h2 id="question-text">Preparando motores para o lançamento...</h2>
+                    </div>
+                </div>
+
+                <div class="options-grid" id="options-grid">
+                    <!-- Opções serão inseridas via JS -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer: Estatísticas -->
+        <footer class="game-footer">
+            <button id="start-btn" class="btn-primary">INICIAR MISSÃO</button>
+            <div id="stats-bar" class="stats-bar hidden">
+                <div class="stat-item">
+                    <span class="icon">⭐</span>
+                    <span class="label">Acertos:</span>
+                    <span id="stat-correct">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="icon">🎯</span>
+                    <span class="label">Sequência:</span>
+                    <span id="stat-streak">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="icon">🏆</span>
+                    <span class="label">Melhor:</span>
+                    <span id="stat-best-streak">0</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal de Feedback/Ranking Final -->
+    <div id="overlay" class="hidden">
+        <div class="modal" id="modal-content">
+            <h2 id="modal-title">Excelente!</h2>
+            <div id="modal-body"></div>
+            <button id="modal-btn" class="btn-primary">CONTINUAR</button>
+        </div>
+    </div>
+
+    <script src="game-logic.js"></script>
+</body>
+</html>
