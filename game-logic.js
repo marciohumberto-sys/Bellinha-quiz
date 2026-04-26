@@ -404,7 +404,7 @@ function showQuestion() {
         const btn = document.createElement('button');
         btn.className = 'option-btn';
         btn.innerText = opt;
-        btn.onclick = () => handleAnswer(idx);
+        btn.onclick = (e) => handleAnswer(idx, e);
         optionsGrid.appendChild(btn);
     });
     
@@ -416,9 +416,14 @@ function showQuestion() {
     updateProgress();
 }
 
-function handleAnswer(idx) {
+function handleAnswer(idx, event) {
     const q = gameState.missionQuestions[gameState.currentQuestionIndex];
     const buttons = optionsGrid.querySelectorAll('.option-btn');
+    
+    // Aplicar blur imediato para evitar estado :focus preso no mobile
+    if (event && event.currentTarget) {
+        event.currentTarget.blur();
+    }
     
     // Disable all buttons
     buttons.forEach(btn => btn.disabled = true);

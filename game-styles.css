@@ -492,10 +492,17 @@ body {
     text-align: left;
 }
 
-.option-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--neon-blue);
-    transform: translateY(-5px);
+.option-btn:focus {
+    outline: none;
+}
+
+/* Hover apenas para dispositivos que suportam hover (previne bug no iPhone) */
+@media (hover: hover) {
+    .option-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--neon-blue);
+        transform: translateY(-5px);
+    }
 }
 
 .option-btn.correct {
