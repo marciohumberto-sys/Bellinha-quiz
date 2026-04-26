@@ -170,10 +170,6 @@ const statBestStreak = document.getElementById('stat-best-streak');
 const soundToggle = document.getElementById('sound-toggle');
 syncSoundUI();
 
-// Pré-carregamento do som de vitória
-const victorySound = new Audio('sounds/victory.mp3');
-victorySound.volume = 0.4;
-
 // Sound Manager (Web Audio API)
 let audioCtx = null;
 let audioReady = false;
@@ -226,6 +222,36 @@ function initBackgroundMusic() {
     if (!gameState.isMuted) {
         window.bgMusicInstance.play()
             .catch(e => console.log("Erro ao tocar BGM (interação necessária):", e));
+    }
+}
+
+// Singleton para o jingle de vitória
+window.victoryJingleInstance = null;
+
+function initVictoryJingle() {
+    if (window.victoryJingleInstance) return;
+    
+    console.log("Criando instância do jingle de vitória...");
+    // Usando URL externa (Mixkit - Success/Win)
+    const jingleUrl = 'https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3';
+    window.victoryJingleInstance = new Audio(jingleUrl);
+    window.victoryJingleInstance.volume = 0.5;
+}
+
+function playVictoryJingle() {
+    if (!window.victoryJingleInstance || gameState.isMuted) {
+        console.log('Jingle de vitória ignorado (mutado ou não inicializado)');
+        return;
+    }
+
+    console.log('Tentando tocar jingle de missão concluída');
+    try {
+        window.victoryJingleInstance.currentTime = 0;
+        window.victoryJingleInstance.play().catch(error => {
+            console.warn('Erro ao tocar jingle de missão concluída:', error);
+        });
+    } catch (error) {
+        console.warn('Erro ao tocar jingle de missão concluída:', error);
     }
 }
 
@@ -351,6 +377,7 @@ const handleStartInteraction = (e) => {
     
     initAudio(); // Lazy init directly in user handler
     initBackgroundMusic(); // Iniciar música ambiente na primeira interação
+    initVictoryJingle(); // Iniciar jingle de vitória
     hasStartedInteraction = true;
     
     clearInterval(loadingInterval);
@@ -520,13 +547,8 @@ function createSuccessEffect(target) {
 }
 
 function finishMission() {
-    // Tocar som de vitória ao concluir a missão
-    try {
-        victorySound.currentTime = 0;
-        victorySound.play();
-    } catch (e) {
-        console.log('Erro ao tocar som de vitória', e);
-    }
+    // Tocar jingle de vitória ao concluir a missão
+    playVictoryJingle();
 
     if (gameState.currentMission < 3) {
         showModal(
@@ -559,13 +581,8 @@ function showFinalRanking() {
         msg = "Parabéns por começar sua jornada! Continue estudando as estrelas!";
     }
     
-    // Tocar som de vitória no ranking final também
-    try {
-        victorySound.currentTime = 0;
-        victorySound.play();
-    } catch (e) {
-        console.log('Erro ao tocar som de vitória', e);
-    }
+    // Tocar jingle de vitória no ranking final também
+    playVictoryJingle();
     
     playSound('victory'); // Mantém o som sintetizado como camada extra ou fallback
     
